@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DjChat</title>
+  <style>
+    body {
+      margin: 0 auto;
+      max-width: 800px;
+      padding: 20px;
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    h2 {
+      text-align: center;
+      color: #00ffe7;
+      text-shadow: 0 0 10px #00ffe766;
+      margin-bottom: 30px;
+    }
+
+    #display {
+      max-height: 60vh;
+      overflow-y: auto;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      border: 1px solid #333;
+      background: linear-gradient(145deg, #1f1f1f, #292929);
+      border-radius: 10px;
+      padding: 15px;
+      margin: 15px 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    .darker {
+      border-color: #444;
+      background: #1a1a1a;
+    }
+
+    .container::after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+
+    .container b {
+      color: #00ffd5;
+    }
+
+    .container p {
+      margin: 10px 0;
+      line-height: 1.6;
+    }
+
+    .time-left {
+      float: left;
+      font-size: 0.85em;
+      color: #aaa;
+    }
+
+    input[type=text] {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background-color: #1e1e1e;
+      color: #fff;
+      border: 1px solid #444;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    input[type=text]::placeholder {
+      color: #aaa;
+    }
+
+    input[type=submit] {
+      width: 100%;
+      background: linear-gradient(135deg, #00ffa1, #00c6ff);
+      color: #000;
+      padding: 14px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 1em;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    input[type=submit]:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    form {
+      background-color: #1a1a1a;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 15px rgba(0,255,231,0.1);
+    }
+
+    ::selection {
+      background: #00ffe7;
+      color: #000;
+    }
+  </style>
+
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+  <h2>{{room}} - DjChat</h2>
+
+  <div id="display"></div>
+
+  <form id="post-form">
+    {% csrf_token %}
+    <input type="hidden" name="username" id="username" value="{{username}}" />
+    <input type="hidden" name="room_id" id="room_id" value="{{room_details.id}}" />
+    <input type="text" name="message" id="message" placeholder="Type your message..." />
+    <input type="submit" value="Send">
+  </form>
+
+  <script>
+    $(document).ready(function () {
+      setInterval(function () {
+        $.ajax({
+          type: 'GET',
+          url: "/getMessages/{{room}}/",
+          success: function (response) {
+            console.log(response);
+            $("#display").empty();
+            for (var key in response.messages) {
+              var temp = "<div class='container darker'><b>" + response.messages[key].user + "</b><p>" + response.messages[key].value + "</p><span class='time-left'>" + response.messages[key].date + "</span></div>";
+              $("#display").append(temp);
+            }
+            $("#display").scrollTop($("#display")[0].scrollHeight);
+          },
+          error: function () {
+            alert('An error occurred while loading messages.');
+          }
+        });
+      }, 1000);
+    });
+
+    $(document).on('submit', '#post-form', function (e) {
+      e.preventDefault();
+
+      $.ajax({
+        type: 'POST',
+        url: '/send',
+        data: {
+          username: $('#username').val(),
+          room_id: $('#room_id').val(),
+          message: $('#message').val(),
+          csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+        },
+        success: function () {
+          $('#message').val('');
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Django Chat</title>
+  <style>
+    body {
+      margin: 0 auto;
+      max-width: 800px;
+      padding: 0 20px;
+      background-color: #121212;
+      color: #ffffff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    h2 {
+      color: #00ffe7;
+      text-shadow: 1px 1px 8px #00ffe755;
+    }
+
+    .container {
+      border: 1px solid #333;
+      background: linear-gradient(145deg, #1f1f1f, #2a2a2a);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+    }
+
+    .darker {
+      border-color: #444;
+      background-color: #1c1c1c;
+    }
+
+    .container::after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+
+    .container img {
+      float: left;
+      max-width: 60px;
+      width: 100%;
+      margin-right: 20px;
+      border-radius: 50%;
+    }
+
+    .container img.right {
+      float: right;
+      margin-left: 20px;
+      margin-right: 0;
+    }
+
+    .time-right, .time-left {
+      font-size: 0.85em;
+      color: #bbbbbb;
+    }
+
+    input[type=text], select {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 10px 0;
+      display: inline-block;
+      background-color: #1e1e1e;
+      color: #ffffff;
+      border: 1px solid #444;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 1em;
+    }
+
+    input[type=text]::placeholder {
+      color: #aaaaaa;
+    }
+
+    input[type=submit] {
+      width: 100%;
+      background: linear-gradient(135deg, #00ffa1, #00c6ff);
+      color: #000;
+      padding: 14px 20px;
+      margin-top: 12px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 1em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    input[type=submit]:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    label {
+      font-size: 1em;
+      margin-top: 10px;
+      display: block;
+      color: #cccccc;
+    }
+
+    form {
+      margin-top: 10px;
+    }
+
+    ::selection {
+      background: #00ffe7;
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+
+  <div align="center">
+    <h2>Django Chat</h2>
+  </div>
+
+  <div class="container">
+    <form id="post-form" method="POST" action="checkview">
+      {% csrf_token %}
+      <label for="room_name">Room Name</label>
+      <input type="text" name="room_name" id="room_name" placeholder="Enter room name" />
+
+      <label for="username">Username</label>
+      <input type="text" name="username" id="username" placeholder="Enter your username" />
+
+      <input type="submit" value="Enter Room">
+    </form>
+  </div>
+
+</body>
+</html>
